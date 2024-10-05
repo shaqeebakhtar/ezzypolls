@@ -1,21 +1,43 @@
 'use client';
-import { InfoIcon, PlusIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { InfoIcon, PlusIcon, XIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
-import Hint from '../ui/hint';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import Hint from '@/components/ui/hint';
 
 const CreateNewPoll = () => {
   const [question, setQuestion] = useState<string>();
+  const [choices, setChoices] = useState<
+    {
+      id: number;
+      placeholder: string;
+    }[]
+  >([]);
+
+  function addChoice() {
+    setChoices((prev) => [
+      ...prev,
+      {
+        id: Math.random(),
+        placeholder: `Choice ${prev.length + 3}`,
+      },
+    ]);
+  }
+
+  function removeChoice(choiceId: number) {
+    setChoices((prev) => {
+      return prev.filter((choice) => choice.id !== choiceId);
+    });
+  }
 
   return (
     <section className="bg-gray-100 dark:bg-background w-full min-h-[calc(100vh-56px)] py-6">
@@ -36,11 +58,28 @@ const CreateNewPoll = () => {
               className="h-10 text-base shadow-none placeholder:text-gray-500"
               placeholder="Choice 2"
             />
+            {choices.map((choice) => (
+              <div key={choice.id} className="flex items-center gap-2">
+                <Input
+                  className="h-10 text-base shadow-none placeholder:text-gray-500"
+                  placeholder={choice.placeholder}
+                />
+                <Button
+                  variant={'secondary'}
+                  size={'icon'}
+                  className="w-10"
+                  onClick={() => removeChoice(choice.id)}
+                >
+                  <XIcon className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
           </div>
           <Button
             variant={'ghost'}
             size={'sm'}
             className="text-primary hover:bg-primary/10 hover:text-primary h-auto px-2 py-1.5"
+            onClick={addChoice}
           >
             <PlusIcon className="w-3 h-3 mr-1.5" />
             Add Choice
@@ -62,7 +101,7 @@ const CreateNewPoll = () => {
                 >
                   Show responses as percentage
                   <Hint label="You can swithc">
-                    <InfoIcon className="w-4 h-4" />
+                    <InfoIcon className="w-4 h-4 text-gray-500" />
                   </Hint>
                 </Label>
                 <Switch id="show-percentage" />
@@ -74,7 +113,7 @@ const CreateNewPoll = () => {
                 >
                   Show result
                   <Hint label="Show only voting bars">
-                    <InfoIcon className="w-4 h-4" />
+                    <InfoIcon className="w-4 h-4 text-gray-500" />
                   </Hint>
                 </Label>
                 <Switch id="show-result" />

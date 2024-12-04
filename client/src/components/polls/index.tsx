@@ -31,14 +31,14 @@ function PollDashboard() {
   return (
     <div className="bg-gray-100">
       <PollsHeader />
-      <section className="max-w-screen-sm mx-auto dark:bg-background w-full min-h-[calc(100vh-56px)] py-6 space-y-6">
+      <section className="max-w-screen-sm mx-auto dark:bg-background w-full min-h-[calc(100vh-56px)] space-y-6 pt-8 pb-12">
         <PresentationControls />
         {polls.map((poll: TPoll) => (
           <Poll key={poll.id} poll={poll} />
         ))}
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           size="lg"
           className="w-full rounded-full shadow-none"
           onClick={addQuestion}

@@ -6,7 +6,7 @@ import Poll from './poll';
 import { PlusIcon } from 'lucide-react';
 import { usePollStore } from '@/store/poll';
 
-function CreatePoll() {
+function Create() {
   const { polls, addPoll } = usePollStore((state) => state);
 
   const addQuestion = () => {
@@ -51,4 +51,4 @@ function CreatePoll() {
   );
 }
 
-export default CreatePoll;
+export default Create;

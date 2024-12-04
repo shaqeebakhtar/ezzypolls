@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import Home from '@/components/home';
-import CreatePoll from './components/polls';
+import Create from './components/polls/create';
+import Vote from './components/polls/vote';
+import Present from './components/polls/present';
 
 function App() {
   return (
@@ -9,9 +11,9 @@ function App() {
         <Route index element={<Home />} />
 
         <Route path="poll">
-          <Route path=":pollId/create" element={<CreatePoll />} />
-          <Route path=":pollId/vote" element={<CreatePoll />} />
-          <Route path=":pollId/present" element={<CreatePoll />} />
+          <Route path=":pollId/create" element={<Create />} />
+          <Route path=":pollId/vote" element={<Vote />} />
+          <Route path=":pollId/present" element={<Present />} />
         </Route>
       </Routes>
     </Router>

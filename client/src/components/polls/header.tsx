@@ -11,11 +11,11 @@ const PollsHeader = () => {
         </div>
         <div className="flex items-center gap-2 py-2">
           <Button variant="secondary" className="h-8 rounded-full">
-            <Share2Icon className="w-4 h-4 mr-2" />
+            <Share2Icon className="w-4 h-4" />
             Share
           </Button>
           <Button className="h-8 rounded-full">
-            <PresentationIcon className="w-4 h-4 mr-2" />
+            <PresentationIcon className="w-4 h-4" />
             Present
           </Button>
         </div>

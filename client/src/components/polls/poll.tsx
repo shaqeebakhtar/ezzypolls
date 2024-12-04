@@ -1,45 +1,49 @@
 import { cn } from '@/lib/utils';
-import { useRef, useState } from 'react';
-import Hint from '../ui/hint';
+import { usePollStore } from '@/store/poll';
+import { TChoice, TPoll } from '@/types/poll';
 import { InfoIcon, PlusIcon, Trash2Icon } from 'lucide-react';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
+import { useRef, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { TPoll } from '@/types/poll';
+import Hint from '../ui/hint';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Switch } from '../ui/switch';
 
 const Poll = ({ poll }: { poll: TPoll }) => {
   const editableQuestionRef = useRef(null);
   const [question, setQuestion] = useState('Ask your question here...');
   const [isEditable, setIsEditable] = useState(false);
-  // const [choices, setChoices] = useState<
-  //   {
-  //     id: string;
-  //     placeholder: string;
-  //   }[]
-  // >([]);
+  const [choices, setChoices] = useState<TChoice[]>(poll.choices);
+  const { updateChoices } = usePollStore((state) => state);
 
-  // function addChoice() {
-  //   setChoices((prev) => [
-  //     ...prev,
-  //     {
-  //       id: Date.now().toString(),
-  //       placeholder: `Choice ${prev.length + 3}`,
-  //     },
-  //   ]);
-  // }
+  function addChoice() {
+    setChoices((prev) => {
+      const updatedChoices = [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          placeholder: `Choice ${prev.length + 3}`,
+        },
+      ];
+      updateChoices(poll.id, updatedChoices);
+      return updatedChoices;
+    });
+  }
 
-  // function removeChoice(choiceId: string) {
-  //   setChoices((prev) => {
-  //     return prev.filter((choice) => choice.id !== choiceId);
-  //   });
-  // }
+  function removeChoice(choiceId: string) {
+    setChoices((prev) => {
+      const updatedChoices = prev.filter((choice) => choice.id !== choiceId);
+
+      updateChoices(poll.id, updatedChoices);
+      return updatedChoices;
+    });
+  }
 
   return (
     <div className="max-w-screen-sm mx-auto bg-background dark:bg-gray-800/30 rounded-lg">
@@ -63,7 +67,7 @@ const Poll = ({ poll }: { poll: TPoll }) => {
           <p>{question}</p>
         </div>
         <div className="w-full space-y-2.5">
-          {poll.choices.map((choice, index) => (
+          {choices.map((choice, index) => (
             <div key={choice.id} className="flex items-center gap-2">
               <Input
                 className="shadow-none placeholder:text-gray-500"
@@ -71,12 +75,13 @@ const Poll = ({ poll }: { poll: TPoll }) => {
               />
               <Button
                 type="button"
-                variant={'secondary'}
+                variant="secondary"
                 size={'icon'}
-                className="w-10"
-                // onClick={() => removeChoice(choice.id)}
+                className="w-10 bg-destructive/10 hover:bg-destructive/20"
+                disabled={choices.length < 3}
+                onClick={() => removeChoice(choice.id)}
               >
-                <Trash2Icon className="w-4 h-4 text-secondary-foreground" />
+                <Trash2Icon className="w-4 h-4  text-destructive" />
               </Button>
             </div>
           ))}
@@ -86,7 +91,7 @@ const Poll = ({ poll }: { poll: TPoll }) => {
           variant={'ghost'}
           size={'sm'}
           className="text-primary hover:bg-primary/10 hover:text-primary h-auto px-2 py-1.5"
-          // onClick={addChoice}
+          onClick={addChoice}
         >
           <PlusIcon className="w-3 h-3 mr-1.5" />
           Add Choice

@@ -8,8 +8,8 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
 
-        <Route path="polls">
-          <Route path=":pollId" element={<PollDashboard />} />
+        <Route path="poll">
+          <Route path=":pollId/create" element={<PollDashboard />} />
         </Route>
       </Routes>
     </Router>

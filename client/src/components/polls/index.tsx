@@ -6,7 +6,7 @@ import Poll from './poll';
 import { PlusIcon } from 'lucide-react';
 import { usePollStore } from '@/store/poll';
 
-function PollDashboard() {
+function CreatePoll() {
   const { polls, addPoll } = usePollStore((state) => state);
 
   const addQuestion = () => {
@@ -31,7 +31,7 @@ function PollDashboard() {
   return (
     <div className="bg-gray-100">
       <PollsHeader />
-      <section className="max-w-screen-sm mx-auto dark:bg-background w-full min-h-[calc(100vh-56px)] space-y-6 pt-8 pb-12">
+      <section className="max-w-screen-sm mx-auto dark:bg-background w-full min-h-[calc(100vh-56px)] space-y-4 pt-8 pb-12 px-3">
         <PresentationControls />
         {polls.map((poll: TPoll) => (
           <Poll key={poll.id} poll={poll} />
@@ -51,4 +51,4 @@ function PollDashboard() {
   );
 }
 
-export default PollDashboard;
+export default CreatePoll;

@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { usePollStore } from '@/store/poll';
 import { TChoice, TPoll } from '@/types/poll';
-import { InfoIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { InfoIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import {
   Accordion,
@@ -77,11 +77,11 @@ const Poll = ({ poll }: { poll: TPoll }) => {
                 type="button"
                 variant="secondary"
                 size={'icon'}
-                className="w-10 bg-destructive/10 hover:bg-destructive/20"
+                className="w-10"
                 disabled={choices.length < 3}
                 onClick={() => removeChoice(choice.id)}
               >
-                <Trash2Icon className="w-4 h-4  text-destructive" />
+                <XIcon className="w-4 h-4 text-muted-foreground" />
               </Button>
             </div>
           ))}
@@ -110,7 +110,7 @@ const Poll = ({ poll }: { poll: TPoll }) => {
                   className="flex items-center gap-2 w-full font-normal cursor-pointer"
                 >
                   Show responses as percentage
-                  <Hint label="Show votes as percentage">
+                  <Hint label="Responses are shown in numbers by default">
                     <InfoIcon className="w-4 h-4 text-gray-500" />
                   </Hint>
                 </Label>
@@ -121,10 +121,7 @@ const Poll = ({ poll }: { poll: TPoll }) => {
                   htmlFor="show-result"
                   className="flex items-center gap-2 w-full font-normal cursor-pointer"
                 >
-                  Show result
-                  <Hint label="Hide/Show result in presentor mode">
-                    <InfoIcon className="w-4 h-4 text-gray-500" />
-                  </Hint>
+                  Allow multiple selections
                 </Label>
                 <Switch id="show-result" />
               </div>

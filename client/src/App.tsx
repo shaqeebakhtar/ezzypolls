@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import Home from '@/components/home';
-import PollDashboard from './components/polls';
+import CreatePoll from './components/polls';
 
 function App() {
   return (
@@ -9,7 +9,9 @@ function App() {
         <Route index element={<Home />} />
 
         <Route path="poll">
-          <Route path=":pollId/create" element={<PollDashboard />} />
+          <Route path=":pollId/create" element={<CreatePoll />} />
+          <Route path=":pollId/vote" element={<CreatePoll />} />
+          <Route path=":pollId/present" element={<CreatePoll />} />
         </Route>
       </Routes>
     </Router>

@@ -10,9 +10,12 @@ const PollsHeader = () => {
           <p className="text-sm font-medium">My First Poll</p>
         </div>
         <div className="flex items-center gap-2 py-2">
-          <Button variant="secondary" className="h-8 rounded-full">
+          <Button
+            variant="secondary"
+            className="rounded-full w-8 h-8 sm:w-auto"
+          >
             <Share2Icon className="w-4 h-4" />
-            Share
+            <span className="hidden sm:block">Share</span>
           </Button>
           <Button className="h-8 rounded-full">
             <PresentationIcon className="w-4 h-4" />

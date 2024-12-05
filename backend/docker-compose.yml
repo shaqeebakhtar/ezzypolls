@@ -1,0 +1,17 @@
+name: ezzypolls
+services:
+  db:
+    container_name: ezzypollsdb
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'ezzypolls'
+      MYSQL_USER: 'mysql'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ezzypollsdata:/var/lib/mysql
+volumes:
+  ezzypollsdata:

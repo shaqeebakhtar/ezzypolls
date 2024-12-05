@@ -11,9 +11,20 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/shaqeebakhtar/ezzypolls/backend/internal/config"
+	"github.com/shaqeebakhtar/ezzypolls/backend/internal/storage/mysql"
 )
 
 func main() {
+	cfg := config.Load()
+
+	_, err := mysql.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("storage initialized", slog.String("env", cfg.Env))
+
 	r := mux.NewRouter().PathPrefix("/api").Subrouter()
 
 	// routes
@@ -22,11 +33,11 @@ func main() {
 	})
 
 	server := &http.Server{
-		Addr:    "127.0.0.1:8000",
+		Addr:    cfg.Addr,
 		Handler: r,
 	}
 
-	slog.Info("server running at http://localhost:8000")
+	slog.Info("server running at", slog.String("address", cfg.Addr))
 
 	c := make(chan os.Signal, 1)
 

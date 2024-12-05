@@ -28,16 +28,16 @@ func main() {
 
 	slog.Info("server running at http://localhost:8000")
 
-	// Run our server in a goroutine so that it doesn't block.
-	go func() {
-		if err := server.ListenAndServe(); err != nil {
-			log.Fatal("failed to start server", err)
-		}
-	}()
-
 	c := make(chan os.Signal, 1)
 
 	signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// Run our server in a goroutine so that it doesn't block.
+	go func() {
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	// Block until we receive our signal.
 	<-c
@@ -48,6 +48,6 @@ func main() {
 
 	server.Shutdown(ctx)
 
-	log.Println("shutting down")
+	slog.Info("server shutdown")
 	os.Exit(0)
 }

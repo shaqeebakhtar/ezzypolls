@@ -7,8 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Poll {
   id    String  @id @default(cuid())
-  email String  @unique
-  name  String?
+  name  String
+  email String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

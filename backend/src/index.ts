@@ -1,9 +1,9 @@
 import cors from 'cors';
 import express, { Express } from 'express';
-import { router } from './routes';
 import { PORT } from './utils/config';
 import cluster from 'cluster';
 import { cpus } from 'os';
+import { router } from './routes';
 
 const app: Express = express();
 

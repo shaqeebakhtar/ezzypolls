@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: 'ezzypolls'
-      MYSQL_USER: 'mysql'
+      MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:

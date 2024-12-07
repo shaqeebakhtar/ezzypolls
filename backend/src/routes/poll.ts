@@ -1,4 +1,4 @@
 import { router } from '.';
-import { createPoll } from '../controllers/poll';
+import { pollController } from '../controllers/poll';
 
-router.post('/poll', createPoll);
+router.post('/poll', pollController.createPoll);

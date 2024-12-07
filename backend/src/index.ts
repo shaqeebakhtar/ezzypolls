@@ -4,8 +4,14 @@ import { PORT } from './utils/config';
 import cluster from 'cluster';
 import { cpus } from 'os';
 import { router } from './routes';
+import { createServer } from 'http';
+import { SocketService } from './services/socket';
 
 const app: Express = express();
+const httpServer = createServer(app);
+
+const socketService = new SocketService(httpServer);
+socketService.init();
 
 const port = PORT || 3000;
 const cpuCount = cpus().length;
@@ -31,7 +37,7 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(
       `Worker process ${process.pid} is running at http://localhost:${port}`
     );

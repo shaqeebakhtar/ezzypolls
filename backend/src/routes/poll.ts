@@ -1,4 +1,7 @@
-import { router } from '.';
 import { pollController } from '../controllers/poll';
+import { Router } from 'express';
 
-router.post('/poll', pollController.createPoll);
+export const pollRouter = Router();
+
+pollRouter.post('/poll', pollController.createPoll);
+pollRouter.get('/poll/:pollId', pollController.getPollById);

@@ -1,13 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { PresentationIcon, Share2Icon, VoteIcon } from 'lucide-react';
 
-const PollsHeader = () => {
+const PollsHeader = ({ pollName }: { pollName: string }) => {
   return (
     <header className="bg-background border-b border-gray-200 dark:border-gray-800">
       <div className="flex gap-4 items-center justify-between px-4">
         <div className="flex items-center py-2">
           <VoteIcon className="mr-2 text-gray-500 dark:text-gray-400" />
-          <p className="text-sm font-medium">My First Poll</p>
+          <p className="text-sm font-medium">{pollName}</p>
         </div>
         <div className="flex items-center gap-2 py-2">
           <Button

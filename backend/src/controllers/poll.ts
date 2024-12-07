@@ -4,7 +4,7 @@ import { db } from '../utils/db';
 import { tokenService } from '../services/token';
 
 class PollController {
-  async createPoll(req: Request, res: Response) {
+  public async createPoll(req: Request, res: Response) {
     const body = req.body;
 
     const { name, email } = pollSchema.parse(body);
@@ -38,6 +38,35 @@ class PollController {
 
     res.status(200).json({
       id: poll?.id,
+    });
+  }
+
+  public async getPollById(req: Request, res: Response) {
+    const { pollId } = req.params;
+
+    let poll = null;
+
+    try {
+      poll = await db.poll.findFirst({
+        where: {
+          id: pollId,
+        },
+        include: {
+          questions: {
+            include: {
+              options: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Unable to fetch polls',
+      });
+    }
+
+    res.status(200).json({
+      poll,
     });
   }
 }

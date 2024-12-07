@@ -3,9 +3,9 @@ import express, { Express } from 'express';
 import { PORT } from './utils/config';
 import cluster from 'cluster';
 import { cpus } from 'os';
-import { router } from './routes';
 import { createServer } from 'http';
 import { SocketService } from './services/socket';
+import { pollRouter } from './routes/poll';
 
 const app: Express = express();
 const httpServer = createServer(app);
@@ -23,7 +23,7 @@ app.use(cors(corsOption));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', router);
+app.use('/api', pollRouter);
 
 if (cluster.isPrimary) {
   console.log(`Master process ${process.pid} is running`);

@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router';
 import { buttonVariants } from '../ui/button';
+import CreatePollDialog from './create-poll-dialog';
 
 function Hero() {
   return (
@@ -17,15 +18,7 @@ function Hero() {
         decisions effortlessly.
       </p>
       <div className="flex items-center gap-4 mt-8 justify-center">
-        <Link
-          to="#"
-          className={cn(
-            buttonVariants({ variant: 'default' }),
-            'rounded-full px-6 h-10'
-          )}
-        >
-          Create a Poll
-        </Link>
+        <CreatePollDialog />
         <Link
           to="#"
           className={cn(

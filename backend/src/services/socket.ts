@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import * as http from 'http';
+import { EVENTS } from '../utils/events';
 
 export class SocketService {
   private _io: Server;
@@ -14,8 +15,13 @@ export class SocketService {
   }
 
   public init() {
-    this._io.on('connect', (socket) => {
+    this._io.on('connection', (socket) => {
       console.log(`New Socket Connected`, socket.id);
+
+      // users joining a specific poll
+      socket.on(EVENTS.JOIN, ({ pollId }) => {
+        socket.join(pollId);
+      });
     });
   }
 

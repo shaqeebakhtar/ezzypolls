@@ -1,4 +1,4 @@
-const EVENTS = {
+export const EVENTS = {
   JOIN: 'join',
   LEAVE: 'leave',
 };

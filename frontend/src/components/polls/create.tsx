@@ -8,13 +8,14 @@ import { Button } from '../ui/button';
 import PresentationControls from './controls';
 import PollsHeader from './header';
 import Poll from './poll';
+import { useEffect } from 'react';
 
 function Create() {
   const { pollId } = useParams() as {
     pollId: string;
   };
 
-  const { polls, addPoll } = usePollStore((state) => state);
+  const { polls, addPoll, setPolls } = usePollStore((state) => state);
 
   const addQuestion = () => {
     addPoll({
@@ -40,6 +41,12 @@ function Create() {
     queryFn: () => getPollById(pollId),
   });
 
+  useEffect(() => {
+    if (!isLoading && poll) {
+      setPolls(poll.questions);
+    }
+  }, [isLoading, poll, setPolls]);
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -49,9 +56,13 @@ function Create() {
       <PollsHeader pollName={poll.name} />
       <section className="max-w-screen-sm mx-auto dark:bg-background w-full min-h-[calc(100vh-56px)] space-y-4 pt-8 pb-12 px-3">
         <PresentationControls />
-        {polls.map((poll: TPoll) => (
-          <Poll key={poll.id} poll={poll} />
-        ))}
+        {polls.length > 0 ? (
+          polls.map((poll: TPoll) => <Poll key={poll.id} poll={poll} />)
+        ) : (
+          <div className="h-72 grid place-items-center max-w-screen-sm mx-auto bg-background dark:bg-gray-800/30 rounded-lg p-6">
+            <p className="text-lg font-medium">Add your first question</p>
+          </div>
+        )}
         <Button
           type="button"
           variant="outline"

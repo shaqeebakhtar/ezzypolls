@@ -4,6 +4,7 @@ import { create } from 'zustand';
 type PollsStore = {
   polls: TPoll[];
 
+  setPolls: (polls: TPoll[]) => void;
   addPoll: (poll: TPoll) => void;
   removePoll: (pollId: string) => void;
 
@@ -47,6 +48,10 @@ export const usePollStore = create<PollsStore>()((set) => ({
       },
     },
   ],
+  setPolls: (polls: TPoll[]) =>
+    set(() => ({
+      polls,
+    })),
   addPoll: (poll: TPoll) =>
     set((state) => ({
       polls: [...state.polls, poll],

@@ -52,11 +52,7 @@ class PollController {
           id: pollId,
         },
         include: {
-          questions: {
-            include: {
-              choices: true,
-            },
-          },
+          questions: true,
         },
       });
     } catch (error) {
@@ -70,30 +66,54 @@ class PollController {
     });
   }
 
-  public async addQuestionById(req: Request, res: Response) {
+  public async addQuestionByPollId(req: Request, res: Response) {
     const { pollId } = req.params;
 
     let question = null;
+
+    const tempChoices = [
+      { id: Date.now().toString() + Math.random(), choice: '' },
+      { id: Date.now().toString() + Math.random(), choice: '' },
+    ];
 
     try {
       question = await db.question.create({
         data: {
           pollId,
-          question: '',
-          index: 1,
-          choices: {
-            createMany: {
-              data: [{ content: '' }, { content: '' }],
-            },
-          },
-        },
-        include: {
-          choices: true,
+          question: 'Ask your question here...',
+          choices: JSON.stringify(tempChoices),
         },
       });
     } catch (error) {
       res.status(500).json({
         message: 'Unable to add question',
+      });
+    }
+
+    res.status(200).json({
+      question,
+    });
+  }
+
+  public async updateQuestionById(req: Request, res: Response) {
+    const { questionId } = req.params;
+    const { questionTxt, choices } = req.body;
+
+    let question = null;
+
+    try {
+      question = await db.question.update({
+        where: {
+          id: questionId,
+        },
+        data: {
+          question: questionTxt,
+          choices: choices,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Unable to update question',
       });
     }
 

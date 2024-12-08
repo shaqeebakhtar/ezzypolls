@@ -1,8 +1,7 @@
 import { cn } from '@/lib/utils';
-import { usePollStore } from '@/store/poll';
 import { TChoice, TQuestion } from '@/types/poll';
 import { InfoIcon, PlusIcon, XIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -14,36 +13,65 @@ import Hint from '../ui/hint';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { useMutation } from '@tanstack/react-query';
+import { updateQuestionById } from '@/api/poll';
+import { useParams } from 'react-router';
 
-const Question = ({ poll }: { poll: TQuestion }) => {
+const Question = ({ question }: { question: TQuestion }) => {
+  const { pollId } = useParams() as {
+    pollId: string;
+  };
   const editableQuestionRef = useRef(null);
-  const [question, setQuestion] = useState('Ask your question here...');
+  const [questionTxt, setQuestionTxt] = useState(question.question);
   const [isEditable, setIsEditable] = useState(false);
-  const [choices, setChoices] = useState<TChoice[]>(poll.choices);
-  const { updateChoices } = usePollStore((state) => state);
+  const [choices, setChoices] = useState<TChoice[]>(
+    JSON.parse(question.choices)
+  );
 
   function addChoice() {
-    setChoices((prev) => {
-      const updatedChoices = [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          placeholder: `Choice ${prev.length + 3}`,
-        },
-      ];
-      updateChoices(poll.id, updatedChoices);
-      return updatedChoices;
-    });
+    setChoices((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString() + Math.random(),
+        choice: '',
+      },
+    ]);
   }
 
   function removeChoice(choiceId: string) {
-    setChoices((prev) => {
-      const updatedChoices = prev.filter((choice) => choice.id !== choiceId);
-
-      updateChoices(poll.id, updatedChoices);
-      return updatedChoices;
-    });
+    setChoices((prev) => prev.filter((choice) => choice.id !== choiceId));
   }
+
+  function updateChoice(choiceId: string, newValue: string) {
+    setChoices((prev) =>
+      prev.map((choice) =>
+        choice.id === choiceId ? { ...choice, choice: newValue } : choice
+      )
+    );
+  }
+
+  const mutation = useMutation({
+    mutationFn: updateQuestionById,
+    onSuccess: () => {
+      console.log('Question updated successfully!');
+    },
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      mutation.mutate({
+        pollId,
+        questionId: question.id,
+        questionTxt,
+        choices: JSON.stringify(choices),
+      });
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [choices, questionTxt]);
 
   return (
     <div className="max-w-screen-sm mx-auto bg-background dark:bg-gray-800/30 rounded-lg">
@@ -60,18 +88,20 @@ const Question = ({ poll }: { poll: TQuestion }) => {
           )}
           onFocus={() => setIsEditable(true)}
           onBlur={(e) => {
-            setQuestion(e.currentTarget.innerText);
+            setQuestionTxt(e.currentTarget.innerText);
             setIsEditable(false);
           }}
         >
-          <p>{question}</p>
+          <p>{questionTxt}</p>
         </div>
         <div className="w-full space-y-2.5">
           {choices.map((choice, index) => (
-            <div key={choice.id} className="flex items-center gap-2">
+            <div key={index} className="flex items-center gap-2">
               <Input
                 className="shadow-none placeholder:text-gray-500"
                 placeholder={`Choice ${index + 1}`}
+                value={choice.choice}
+                onChange={(e) => updateChoice(choice.id, e.currentTarget.value)}
               />
               <Button
                 type="button"

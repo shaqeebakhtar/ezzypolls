@@ -1,14 +1,10 @@
 export type TQuestion = {
   id: string;
-  question?: string;
-  choices: TChoice[];
-  settings: {
-    showResponses: boolean;
-    showResult: boolean;
-  };
+  question: string;
+  choices: string;
 };
 
 export type TChoice = {
   id: string;
-  choice?: string;
+  choice: string;
 };

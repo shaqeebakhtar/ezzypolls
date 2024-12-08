@@ -41,3 +41,51 @@ export async function getPollById(pollId: string) {
 
   return poll;
 }
+
+export async function addQuestionByPollId(pollId: string) {
+  const res = await fetch(`http://localhost:3000/api/poll/${pollId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to add question');
+  }
+
+  const { question } = await res.json();
+
+  return question;
+}
+
+export async function updateQuestionById({
+  pollId,
+  questionId,
+  questionTxt,
+  choices,
+}: {
+  pollId: string;
+  questionId: string;
+  questionTxt: string;
+  choices: string;
+}) {
+  const res = await fetch(
+    `http://localhost:3000/api/poll/${pollId}/question/${questionId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ questionTxt, choices }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to add question');
+  }
+
+  const { question } = await res.json();
+
+  return question;
+}

@@ -18,18 +18,9 @@ model Poll {
 }
 
 model Question {
-  id       String   @id @default(cuid())
+  id       String @id @default(cuid())
   pollId   String
-  poll     Poll     @relation(fields: [pollId], references: [id])
-  question String   @db.Text
-  index    Int
-  choices  Choice[]
-}
-
-model Choice {
-  id         String   @id @default(cuid())
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id])
-  content    String
-  votes      Int      @default(0)
+  poll     Poll   @relation(fields: [pollId], references: [id])
+  question String
+  choices  String
 }

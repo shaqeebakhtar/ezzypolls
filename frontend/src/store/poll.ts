@@ -1,37 +1,37 @@
-import { TChoice, TPoll } from '@/types/poll';
+import { TChoice, TQuestion } from '@/types/poll';
 import { create } from 'zustand';
 
 type PollsStore = {
-  polls: TPoll[];
+  questions: TQuestion[];
 
-  setPolls: (polls: TPoll[]) => void;
-  addPoll: (poll: TPoll) => void;
-  removePoll: (pollId: string) => void;
+  setQuestions: (questions: TQuestion[]) => void;
+  addQuestion: (question: TQuestion) => void;
+  removeQuestion: (questionId: string) => void;
 
-  updateChoices: (pollId: string, choices: TChoice[]) => void;
+  updateChoices: (questionId: string, choices: TChoice[]) => void;
 };
 
 function setChoices({
   state,
-  pollId,
+  questionId,
   choices,
 }: {
   state: PollsStore;
-  pollId: string;
+  questionId: string;
   choices: TChoice[];
 }) {
-  return state.polls.map((poll) =>
-    poll.id === pollId
+  return state.questions.map((question) =>
+    question.id === questionId
       ? {
-          ...poll,
+          ...question,
           choices,
         }
-      : poll
+      : question
   );
 }
 
 export const usePollStore = create<PollsStore>()((set) => ({
-  polls: [
+  questions: [
     {
       id: Date.now().toString(),
       choices: [
@@ -48,20 +48,22 @@ export const usePollStore = create<PollsStore>()((set) => ({
       },
     },
   ],
-  setPolls: (polls: TPoll[]) =>
+  setQuestions: (questions: TQuestion[]) =>
     set(() => ({
-      polls,
+      questions,
     })),
-  addPoll: (poll: TPoll) =>
+  addQuestion: (question: TQuestion) =>
     set((state) => ({
-      polls: [...state.polls, poll],
+      questions: [...state.questions, question],
     })),
-  removePoll: (pollId: string) =>
+  removeQuestion: (questionId: string) =>
     set((state) => ({
-      polls: state.polls.filter((poll) => poll.id !== pollId),
+      questions: state.questions.filter(
+        (question) => question.id !== questionId
+      ),
     })),
-  updateChoices: (pollId: string, choices: TChoice[]) =>
+  updateChoices: (questionId: string, choices: TChoice[]) =>
     set((state) => ({
-      polls: setChoices({ state, pollId, choices }),
+      questions: setChoices({ state, questionId, choices }),
     })),
 }));

@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { usePollStore } from '@/store/poll';
-import { TChoice, TPoll } from '@/types/poll';
+import { TChoice, TQuestion } from '@/types/poll';
 import { InfoIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import {
@@ -15,7 +15,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 
-const Poll = ({ poll }: { poll: TPoll }) => {
+const Question = ({ poll }: { poll: TQuestion }) => {
   const editableQuestionRef = useRef(null);
   const [question, setQuestion] = useState('Ask your question here...');
   const [isEditable, setIsEditable] = useState(false);
@@ -55,7 +55,7 @@ const Poll = ({ poll }: { poll: TPoll }) => {
           suppressContentEditableWarning
           ref={editableQuestionRef}
           className={cn(
-            'cursor-text w-full font-semibold text-lg bg-transparent px-3 py-1 rounded-md focus:outline-none',
+            'min-h-9 border border-input cursor-text w-full font-semibold text-lg bg-transparent px-3 py-1 rounded-md focus:outline-none',
             isEditable && 'outline-none ring-1 ring-ring'
           )}
           onFocus={() => setIsEditable(true)}
@@ -133,4 +133,4 @@ const Poll = ({ poll }: { poll: TPoll }) => {
   );
 };
 
-export default Poll;
+export default Question;

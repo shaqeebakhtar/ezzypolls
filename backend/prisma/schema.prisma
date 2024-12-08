@@ -23,10 +23,10 @@ model Question {
   poll     Poll     @relation(fields: [pollId], references: [id])
   question String   @db.Text
   index    Int
-  options  Option[]
+  choices  Choice[]
 }
 
-model Option {
+model Choice {
   id         String   @id @default(cuid())
   questionId String
   question   Question @relation(fields: [questionId], references: [id])

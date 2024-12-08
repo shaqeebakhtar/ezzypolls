@@ -1,4 +1,4 @@
-export type TPoll = {
+export type TQuestion = {
   id: string;
   question?: string;
   choices: TChoice[];

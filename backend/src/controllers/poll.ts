@@ -54,7 +54,7 @@ class PollController {
         include: {
           questions: {
             include: {
-              options: true,
+              choices: true,
             },
           },
         },
@@ -67,6 +67,38 @@ class PollController {
 
     res.status(200).json({
       poll,
+    });
+  }
+
+  public async addQuestionById(req: Request, res: Response) {
+    const { pollId } = req.params;
+
+    let question = null;
+
+    try {
+      question = await db.question.create({
+        data: {
+          pollId,
+          question: '',
+          index: 1,
+          choices: {
+            createMany: {
+              data: [{ content: '' }, { content: '' }],
+            },
+          },
+        },
+        include: {
+          choices: true,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Unable to add question',
+      });
+    }
+
+    res.status(200).json({
+      question,
     });
   }
 }

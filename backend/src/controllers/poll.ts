@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { pollSchema } from '../models/poll';
 import { db } from '../utils/db';
 import { tokenService } from '../services/token';
+import { questionSchema } from '../models/question';
 
 class PollController {
   public async createPoll(req: Request, res: Response) {
@@ -68,25 +69,22 @@ class PollController {
 
   public async addQuestionByPollId(req: Request, res: Response) {
     const { pollId } = req.params;
+    const { questionTxt, choices } = questionSchema.parse(req.body);
 
     let question = null;
-
-    const tempChoices = [
-      { id: Date.now().toString() + Math.random(), choice: '' },
-      { id: Date.now().toString() + Math.random(), choice: '' },
-    ];
 
     try {
       question = await db.question.create({
         data: {
           pollId,
-          question: 'Ask your question here...',
-          choices: JSON.stringify(tempChoices),
+          question: questionTxt,
+          choices: choices,
         },
       });
     } catch (error) {
       res.status(500).json({
         message: 'Unable to add question',
+        error,
       });
     }
 

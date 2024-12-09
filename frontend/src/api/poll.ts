@@ -42,12 +42,21 @@ export async function getPollById(pollId: string) {
   return poll;
 }
 
-export async function addQuestionByPollId(pollId: string) {
+export async function addQuestionByPollId({
+  pollId,
+  questionTxt,
+  choices,
+}: {
+  pollId: string;
+  questionTxt: string;
+  choices: string;
+}) {
   const res = await fetch(`http://localhost:3000/api/poll/${pollId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({ questionTxt, choices }),
   });
 
   if (!res.ok) {

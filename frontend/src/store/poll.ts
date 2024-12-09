@@ -5,7 +5,7 @@ type PollsStore = {
   questions: TQuestion[];
   setQuestions: (questions: TQuestion[]) => void;
 
-  // addQuestion: (question: TQuestion) => void;
+  addQuestion: (question: TQuestion) => void;
   // removeQuestion: (questionId: string) => void;
 
   // updateChoices: (questionId: string, choices: TChoice[]) => void;
@@ -36,10 +36,10 @@ export const usePollStore = create<PollsStore>()((set) => ({
     set(() => ({
       questions,
     })),
-  // addQuestion: (question: TQuestion) =>
-  //   set((state) => ({
-  //     questions: [...state.questions, question],
-  //   })),
+  addQuestion: (question: TQuestion) =>
+    set((state) => ({
+      questions: [...state.questions, question],
+    })),
   // removeQuestion: (questionId: string) =>
   //   set((state) => ({
   //     questions: state.questions.filter(

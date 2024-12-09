@@ -20,7 +20,7 @@ model Poll {
 model Question {
   id       String @id @default(cuid())
   pollId   String
-  poll     Poll   @relation(fields: [pollId], references: [id])
+  poll     Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
   question String
   choices  String
 }

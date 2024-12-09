@@ -1,34 +1,45 @@
-import { addQuestionByPollId, getPollById } from '@/api/poll';
+import { getPollById } from '@/api/poll';
 import { TQuestion } from '@/types/poll';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
 import { Button } from '../ui/button';
 import PollsHeader from './header';
 import Question from './question';
-import { toast } from 'sonner';
+import { usePollStore } from '@/store/poll';
+import { useEffect } from 'react';
 
 function Create() {
   const { pollId } = useParams() as {
     pollId: string;
   };
 
-  const queryClient = useQueryClient();
+  const { questions, addQuestion, setQuestions } = usePollStore(
+    (state) => state
+  );
 
   const { data: poll, isLoading } = useQuery({
     queryKey: ['poll', pollId],
     queryFn: () => getPollById(pollId),
   });
 
-  const mutation = useMutation({
-    mutationFn: addQuestionByPollId,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['poll', pollId] });
-    },
-    onError: () => {
-      toast.error('Failed to add question');
-    },
-  });
+  useEffect(() => {
+    if (!isLoading) {
+      setQuestions(poll.questions);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pollId, poll]);
+
+  const handleAddQuestion = () => {
+    addQuestion({
+      id: crypto.randomUUID(),
+      question: '',
+      choices: JSON.stringify([
+        { id: crypto.randomUUID(), choice: '' },
+        { id: crypto.randomUUID(), choice: '' },
+      ]),
+    });
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -42,14 +53,14 @@ function Create() {
           <Button
             type="button"
             className="rounded-full shadow-none"
-            onClick={() => mutation.mutate(pollId)}
+            onClick={handleAddQuestion}
           >
             <PlusIcon className="w-4 h-4" />
             New question
           </Button>
         </div>
-        {poll.questions.length > 0 ? (
-          poll.questions.map((question: TQuestion) => (
+        {questions.length > 0 ? (
+          questions.map((question: TQuestion) => (
             <Question key={question.id} question={question} />
           ))
         ) : (

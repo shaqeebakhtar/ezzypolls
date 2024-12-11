@@ -37,9 +37,9 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  httpServer.listen(port, () => {
+  httpServer.listen(port, () =>
     console.log(
       `Worker process ${process.pid} is running at http://localhost:${port}`
-    );
-  });
+    )
+  );
 }

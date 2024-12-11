@@ -1,4 +1,4 @@
-import { addQuestionByPollId } from '@/api/poll';
+import { addQuestionByPollId, updateQuestionById } from '@/api/poll';
 import { TChoice, TQuestion } from '@/types/poll';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -23,6 +23,7 @@ const Question = ({ question }: { question: TQuestion }) => {
   const { pollId } = useParams() as {
     pollId: string;
   };
+  const queryClient = useQueryClient();
   const [questionTxt, setQuestionTxt] = useState(question.question || '');
   const [choices, setChoices] = useState<TChoice[]>(
     JSON.parse(question.choices) || []
@@ -34,7 +35,7 @@ const Question = ({ question }: { question: TQuestion }) => {
     setChoices((prev) => [
       ...prev,
       {
-        id: Date.now().toString() + Math.random(),
+        id: crypto.randomUUID(),
         choice: '',
       },
     ]);
@@ -52,30 +53,70 @@ const Question = ({ question }: { question: TQuestion }) => {
     );
   }
 
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
+  function isQuestionOrChoicesChanged() {
+    return (
+      debouncedQuestionTxt.trim() !== question.question.trim() ||
+      JSON.stringify(debouncedChoices) !== question.choices
+    );
+  }
+
+  function isQuestionOrChoicesEmpty() {
+    return (
+      debouncedQuestionTxt.trim() === '' ||
+      debouncedChoices.some((choice) => choice.choice.trim() === '')
+    );
+  }
+
+  function isPreviousQuestionOrChoicesEmpty() {
+    return (
+      question.question.trim() === '' &&
+      JSON.parse(question.choices).some(
+        (choice: TChoice) => choice.choice.trim() === ''
+      )
+    );
+  }
+
+  const { mutate: addQuestion, isPending: isAdding } = useMutation({
     mutationFn: addQuestionByPollId,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['poll', pollId] });
     },
-
     onError: () => {
       toast.error('Failed to add question');
     },
   });
 
+  const { mutate: updateQuestion, isPending: isUpdating } = useMutation({
+    mutationFn: updateQuestionById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['poll', pollId] });
+    },
+    onError: () => {
+      toast.error('Failed to update question');
+    },
+  });
+
   useEffect(() => {
     if (
-      debouncedQuestionTxt.trim() !== '' &&
-      !debouncedChoices.some((choice) => choice.choice.trim() === '')
+      !isQuestionOrChoicesEmpty() &&
+      isQuestionOrChoicesChanged() &&
+      !isPreviousQuestionOrChoicesEmpty()
     ) {
-      // mutate here
-      mutate({
+      updateQuestion({
         pollId,
-        questionTxt: questionTxt,
-        choices: JSON.stringify(choices),
+        questionTxt: debouncedQuestionTxt,
+        choices: JSON.stringify(debouncedChoices),
+        questionId: question.id,
       });
-      console.log('mutating...');
+    } else if (
+      !isQuestionOrChoicesEmpty() &&
+      isPreviousQuestionOrChoicesEmpty()
+    ) {
+      addQuestion({
+        pollId,
+        questionTxt: debouncedQuestionTxt,
+        choices: JSON.stringify(debouncedChoices),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedChoices, debouncedQuestionTxt]);
@@ -118,7 +159,7 @@ const Question = ({ question }: { question: TQuestion }) => {
           ))}
         </div>
         <div className="w-full flex items-center justify-between">
-          {isPending && (
+          {(isAdding || isUpdating) && (
             <div className="flex items-center gap-1.5 text-xs text-green-500">
               <Loader2 className="size-4 animate-spin" />
               Saving..

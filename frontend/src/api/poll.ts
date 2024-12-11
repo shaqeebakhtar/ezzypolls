@@ -82,7 +82,7 @@ export async function updateQuestionById({
   const res = await fetch(
     `http://localhost:3000/api/poll/${pollId}/question/${questionId}`,
     {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },

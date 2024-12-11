@@ -10,45 +10,41 @@ class PollController {
 
     const { name, email } = pollSchema.parse(body);
 
-    let poll = null;
-
     try {
-      poll = await db.poll.create({
+      const poll = await db.poll.create({
         data: {
           name,
           email,
         },
+      });
+
+      const adminToken = tokenService.generateToken({
+        id: poll?.id as string,
+        createdAt: poll?.createdAt.toDateString() as string,
+      });
+
+      res.cookie('adminToken', adminToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+
+      res.status(200).json({
+        id: poll?.id,
       });
     } catch (error) {
       res.status(500).json({
         message: 'Unable to create a poll',
       });
     }
-
-    const adminToken = tokenService.generateToken({
-      id: poll?.id as string,
-      createdAt: poll?.createdAt.toDateString() as string,
-    });
-
-    res.cookie('adminToken', adminToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
-
-    res.status(200).json({
-      id: poll?.id,
-    });
   }
 
   public async getPollById(req: Request, res: Response) {
     const { pollId } = req.params;
 
-    let poll = null;
-
     try {
-      poll = await db.poll.findFirst({
+      const poll = await db.poll.findFirst({
         where: {
           id: pollId,
         },
@@ -56,30 +52,32 @@ class PollController {
           questions: true,
         },
       });
+
+      res.status(200).json({
+        poll,
+      });
     } catch (error) {
       res.status(500).json({
         message: 'Unable to fetch polls',
       });
     }
-
-    res.status(200).json({
-      poll,
-    });
   }
 
   public async addQuestionByPollId(req: Request, res: Response) {
     const { pollId } = req.params;
     const { questionTxt, choices } = questionSchema.parse(req.body);
 
-    let question = null;
-
     try {
-      question = await db.question.create({
+      const question = await db.question.create({
         data: {
           pollId,
           question: questionTxt,
           choices: choices,
         },
+      });
+
+      res.status(200).json({
+        question,
       });
     } catch (error) {
       res.status(500).json({
@@ -87,20 +85,14 @@ class PollController {
         error,
       });
     }
-
-    res.status(200).json({
-      question,
-    });
   }
 
   public async updateQuestionById(req: Request, res: Response) {
     const { questionId } = req.params;
     const { questionTxt, choices } = req.body;
 
-    let question = null;
-
     try {
-      question = await db.question.update({
+      const question = await db.question.update({
         where: {
           id: questionId,
         },
@@ -109,15 +101,16 @@ class PollController {
           choices: choices,
         },
       });
+
+      res.status(200).json({
+        question,
+      });
     } catch (error) {
       res.status(500).json({
         message: 'Unable to update question',
+        error,
       });
     }
-
-    res.status(200).json({
-      question,
-    });
   }
 }
 

@@ -3,7 +3,6 @@ services:
   db:
     container_name: ezzypollsdb
     image: mysql
-    restart: always
     environment:
       MYSQL_DATABASE: 'ezzypolls'
       MYSQL_USER: 'user'

@@ -7,28 +7,7 @@ type PollsStore = {
 
   addQuestion: (question: TQuestion) => void;
   // removeQuestion: (questionId: string) => void;
-
-  // updateChoices: (questionId: string, choices: TChoice[]) => void;
 };
-
-// function setChoices({
-//   state,
-//   questionId,
-//   choices,
-// }: {
-//   state: PollsStore;
-//   questionId: string;
-//   choices: TChoice[];
-// }) {
-//   return state.questions.map((question) =>
-//     question.id === questionId
-//       ? {
-//           ...question,
-//           choices,
-//         }
-//       : question
-//   );
-// }
 
 export const usePollStore = create<PollsStore>()((set) => ({
   questions: [],
@@ -45,9 +24,5 @@ export const usePollStore = create<PollsStore>()((set) => ({
   //     questions: state.questions.filter(
   //       (question) => question.id !== questionId
   //     ),
-  //   })),
-  // updateChoices: (questionId: string, choices: TChoice[]) =>
-  //   set((state) => ({
-  //     questions: setChoices({ state, questionId, choices }),
   //   })),
 }));

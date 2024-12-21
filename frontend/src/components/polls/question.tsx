@@ -19,7 +19,13 @@ import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { Textarea } from '../ui/textarea';
 
-const Question = ({ question }: { question: TQuestion }) => {
+const Question = ({
+  question,
+  order,
+}: {
+  question: TQuestion;
+  order: number;
+}) => {
   const { pollId } = useParams() as {
     pollId: string;
   };
@@ -107,6 +113,7 @@ const Question = ({ question }: { question: TQuestion }) => {
         questionTxt: debouncedQuestionTxt,
         choices: JSON.stringify(debouncedChoices),
         questionId: question.id,
+        order,
       });
     } else if (
       !isQuestionOrChoicesEmpty() &&
@@ -116,6 +123,7 @@ const Question = ({ question }: { question: TQuestion }) => {
         pollId,
         questionTxt: debouncedQuestionTxt,
         choices: JSON.stringify(debouncedChoices),
+        order,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -7,11 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  PAUSED
+  ACTIVE
+}
+
 model Poll {
-  id        String     @id @default(cuid())
-  name      String
-  email     String?
-  questions Question[]
+  id                String     @id @default(cuid())
+  name              String
+  email             String?
+  questions         Question[]
+  currQuestionIndex Int        @default(1)
+  status            Status     @default(PAUSED)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -23,4 +30,5 @@ model Question {
   poll     Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
   question String
   choices  String @db.Text
+  order    Int
 }

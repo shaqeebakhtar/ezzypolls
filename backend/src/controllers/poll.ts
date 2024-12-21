@@ -65,7 +65,7 @@ class PollController {
 
   public async addQuestionByPollId(req: Request, res: Response) {
     const { pollId } = req.params;
-    const { questionTxt, choices } = questionSchema.parse(req.body);
+    const { questionTxt, choices, order } = questionSchema.parse(req.body);
 
     try {
       const question = await db.question.create({
@@ -73,6 +73,7 @@ class PollController {
           pollId,
           question: questionTxt,
           choices: choices,
+          order,
         },
       });
 

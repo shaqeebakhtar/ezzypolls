@@ -38,6 +38,7 @@ function Create() {
         { id: crypto.randomUUID(), choice: '' },
         { id: crypto.randomUUID(), choice: '' },
       ]),
+      order: questions.length + 1,
     });
   };
 
@@ -60,8 +61,8 @@ function Create() {
           </Button>
         </div>
         {questions.length > 0 ? (
-          questions.map((question: TQuestion) => (
-            <Question key={question.id} question={question} />
+          questions.map((question: TQuestion, index) => (
+            <Question key={question.id} question={question} order={index + 1} />
           ))
         ) : (
           <div className="h-72 grid place-items-center max-w-screen-sm mx-auto bg-background dark:bg-gray-800/30 rounded-lg p-6">

@@ -46,17 +46,19 @@ export async function addQuestionByPollId({
   pollId,
   questionTxt,
   choices,
+  order,
 }: {
   pollId: string;
   questionTxt: string;
   choices: string;
+  order: number;
 }) {
   const res = await fetch(`http://localhost:3000/api/poll/${pollId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ questionTxt, choices }),
+    body: JSON.stringify({ questionTxt, choices, order }),
   });
 
   if (!res.ok) {
@@ -73,11 +75,13 @@ export async function updateQuestionById({
   questionId,
   questionTxt,
   choices,
+  order,
 }: {
   pollId: string;
   questionId: string;
   questionTxt: string;
   choices: string;
+  order: number;
 }) {
   const res = await fetch(
     `http://localhost:3000/api/poll/${pollId}/question/${questionId}`,
@@ -86,7 +90,7 @@ export async function updateQuestionById({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ questionTxt, choices }),
+      body: JSON.stringify({ questionTxt, choices, order }),
     }
   );
 

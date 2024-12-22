@@ -2,15 +2,15 @@ name: ezzypolls
 services:
   db:
     container_name: ezzypollsdb
-    image: mysql
+    image: postgres:latest
     environment:
-      MYSQL_DATABASE: 'ezzypolls'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ezzypolls
+      POSTGRES_PASSWORD: password
     ports:
-      - '3306:3306'
+      - '5500:5432'
     volumes:
-      - ezzypollsdata:/var/lib/mysql
+      - ezzypollsdata:/var/lib/postgresql/data
+
 volumes:
   ezzypollsdata:

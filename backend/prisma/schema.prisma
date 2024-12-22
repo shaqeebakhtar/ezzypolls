@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -30,5 +30,6 @@ model Question {
   poll     Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
   question String
   choices  String @db.Text
+  votes    String @db.Text
   order    Int
 }

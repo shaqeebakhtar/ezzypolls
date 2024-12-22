@@ -22,8 +22,6 @@ function Vote() {
 
   useEffect(() => {
     if (!isLoading && poll) {
-      console.log(poll);
-
       setQuestions(poll.questions);
       setCurrentQuestion(
         poll.questions.find(

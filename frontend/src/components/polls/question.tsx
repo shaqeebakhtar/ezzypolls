@@ -43,6 +43,7 @@ const Question = ({
       {
         id: crypto.randomUUID(),
         choice: '',
+        votes: 0,
       },
     ]);
   }

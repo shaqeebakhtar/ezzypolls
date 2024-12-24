@@ -102,3 +102,30 @@ export async function updateQuestionById({
 
   return question;
 }
+
+export async function vote({
+  questionId,
+  choiceId,
+}: {
+  questionId: string;
+  choiceId: string;
+}) {
+  const res = await fetch(
+    `http://localhost:3000/api/poll/question/vote/?questionId=${questionId}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ choiceId }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to add question');
+  }
+
+  const { question } = await res.json();
+
+  return question;
+}

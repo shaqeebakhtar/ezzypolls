@@ -113,6 +113,65 @@ class PollController {
       });
     }
   }
+
+  public async vote(req: Request, res: Response) {
+    const { questionId } = req.query;
+    const { choiceId } = req.body;
+
+    try {
+      const question = await db.question.findFirst({
+        where: {
+          id: questionId as string,
+        },
+      });
+
+      if (!question) {
+        res.status(404).json({
+          message: 'Question not found',
+        });
+        return;
+      }
+
+      const choices = JSON.parse(question.choices);
+
+      const choice = choices.find((c: any) => c.id === choiceId);
+
+      if (!choice) {
+        res.status(404).json({
+          message: 'Choice not found',
+        });
+        return;
+      }
+
+      const updatedChoices = choices.map((c: any) => {
+        if (c.id === choiceId) {
+          return {
+            ...c,
+            votes: c.votes + 1,
+          };
+        }
+        return c;
+      });
+
+      const updatedQuestion = await db.question.update({
+        where: {
+          id: questionId as string,
+        },
+        data: {
+          choices: JSON.stringify(updatedChoices),
+        },
+      });
+
+      res.status(200).json({
+        question: updatedQuestion,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Unable to vote',
+        error,
+      });
+    }
+  }
 }
 
 export const pollController = new PollController();

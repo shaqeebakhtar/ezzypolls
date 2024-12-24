@@ -35,8 +35,8 @@ function Create() {
       id: crypto.randomUUID(),
       question: '',
       choices: JSON.stringify([
-        { id: crypto.randomUUID(), choice: '' },
-        { id: crypto.randomUUID(), choice: '' },
+        { id: crypto.randomUUID(), choice: '', votes: 0 },
+        { id: crypto.randomUUID(), choice: '', votes: 0 },
       ]),
       order: questions.length + 1,
     });

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { useVoteStore } from '@/store/vote';
 import { Link, useParams } from 'react-router';
-import { getPollById } from '@/api/poll';
-import { useQuery } from '@tanstack/react-query';
+import { getPollById, vote } from '@/api/poll';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { TChoice, TQuestion } from '@/types/poll';
 
 function Vote() {
@@ -19,6 +19,19 @@ function Vote() {
     queryKey: ['poll', pollId],
     queryFn: () => getPollById(pollId),
   });
+
+  const { mutate } = useMutation({
+    mutationFn: vote,
+  });
+
+  function handleVote() {
+    if (!selected || !currentQuestion) return;
+
+    mutate({
+      questionId: currentQuestion?.id as string,
+      choiceId: selected,
+    });
+  }
 
   useEffect(() => {
     if (!isLoading && poll) {
@@ -55,14 +68,19 @@ function Vote() {
                   name="options"
                   value={choice.id}
                   checked={selected === choice.id}
-                  onChange={(e) => setSelected(e.target.value)}
+                  onChange={() => setSelected(choice.id)}
                   className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
                 <span className="text-gray-800">{choice.choice}</span>
               </label>
             ))}
         </div>
-        <Button className="w-full rounded-full shadow-none">Submit</Button>
+        <Button
+          className="w-full rounded-full shadow-none"
+          onClick={handleVote}
+        >
+          Submit
+        </Button>
       </div>
       <div className="w-max mx-auto pb-8 lg:fixed lg:right-8 lg:bottom-8 lg:pb-0">
         <Link

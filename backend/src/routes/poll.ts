@@ -10,3 +10,4 @@ pollRouter.patch(
   '/poll/:pollId/question/:questionId',
   pollController.updateQuestionById
 );
+pollRouter.patch('/poll/question/vote', pollController.vote);

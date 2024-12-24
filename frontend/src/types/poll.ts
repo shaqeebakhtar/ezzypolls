@@ -8,4 +8,5 @@ export type TQuestion = {
 export type TChoice = {
   id: string;
   choice: string;
+  votes: number;
 };
